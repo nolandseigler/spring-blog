@@ -24,7 +24,7 @@ class MathController {
         return String.format("This is the result of multiplying %d and %d:  %d", num1, num2, num1 * num2);
     }
 
-    @GetMapping("/multiply/{num1}/and/{num2}")
+    @GetMapping("/divide/{num1}/by/{num2}")
     @ResponseBody
     public String divideNums(@PathVariable int num1, @PathVariable int num2) {
         return String.format("This is the result of dividing %d by %d:  %d", num1, num2, num1 / num2);
