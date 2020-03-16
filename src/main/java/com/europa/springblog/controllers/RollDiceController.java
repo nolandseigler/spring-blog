@@ -1,17 +1,24 @@
 package com.europa.springblog.controllers;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.server.PathParam;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 @Controller
 class RollDiceController {
 
-    @GetMapping("/roll-die/{userNumber}")
-    @ResponseBody
-    public String viewAllPosts(@PathVariable int userNumber) {
+    @GetMapping("/roll-dice")
+    public String welcome() {
+       return "roll-dice";
+    }
+
+    @GetMapping("/roll-dice/{userNumber}")
+    public String rollDie(@PathVariable int userNumber, Model model) {
         String outputString = "";
         int dieNumber = getRandomNumberInRange(1, 6);
         if(userNumber == dieNumber) {
@@ -19,20 +26,31 @@ class RollDiceController {
         } else {
             outputString = String.format("You guessed the incorrect number! The die landed on %d and your number was %d.", dieNumber, userNumber);
         }
-        return outputString;
+        model.addAttribute("result", outputString);
+        return "die-rolled";
     }
 
-//    @GetMapping("/posts/{")
-//    @ResponseBody
-//    public String viewPostById(@PathVariable long postId) {
-//        return String.format("View post number: %d", postId);
-//    }
-//
-//    @GetMapping("/posts/create")
-//    @ResponseBody
-//    public String viewPostCreationForm(@PathVariable int num1, @PathVariable int num2) {
-//        return "View the form for creating a post";
-//    }
+    @GetMapping("/roll-dice/multi/{userNumber}")
+    public String rollDice(@PathVariable int userNumber, Model model) {
+        String outputString = "";
+        int rollsNumber = getRandomNumberInRange(2, 5);
+        List<String> resultList = new ArrayList<>();
+        for(int i = 0; i <= rollsNumber; i++) {
+            if(i == 0) {
+                resultList.add(String.format("You rolled %d dice.", rollsNumber));
+            }
+            int dieNumber = getRandomNumberInRange(1, 6);
+            if (userNumber == dieNumber) {
+                outputString = String.format("You guessed the correct number! The die landed on %d.", dieNumber);
+            } else {
+                outputString = String.format("You guessed the incorrect number! The die landed on %d and your number was %d.", dieNumber, userNumber);
+            }
+            resultList.add(outputString);
+        }
+        model.addAttribute("results", resultList);
+        return "dice-rolled";
+    }
+
 private static int getRandomNumberInRange(int min, int max) {
 
     if (min >= max) {
