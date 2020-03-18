@@ -2,7 +2,9 @@ package com.europa.springblog.controllers;
 
 
 import com.europa.springblog.models.Post;
+import com.europa.springblog.models.User;
 import com.europa.springblog.repositories.PostRepo;
+import com.europa.springblog.repositories.UserRepo;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -14,9 +16,11 @@ public class PostController {
 
 
     private PostRepo postDao;
+    private UserRepo userDao;
 
-    public PostController(PostRepo postDao) {
+    public PostController(PostRepo postDao, UserRepo userDao) {
         this.postDao = postDao;
+        this.userDao = userDao;
     }
 
     //SHOW IT JUST AS JSON.
@@ -33,12 +37,26 @@ public class PostController {
         return "posts/show";
     }
 
+    @GetMapping("/make/user")
+    @ResponseBody
+    public String makeUser() {
+        User newUser = new User();
+        newUser.setEmail("bobbyShmurda@gmail.com");
+        newUser.setPassword("totallyHashed");
+        newUser.setUsername("bobbyShmurda");
+        User user = userDao.save(newUser);
+        long newUserId = user.getId();
+        return String.format("Saving post with id of %d", newUserId);
+    }
+
     @GetMapping("/posts/save")
     @ResponseBody
     public String saveAd() {
+        User user = userDao.getOne(1L); // just use the first user in the db
         Post newPost = new Post();
         newPost.setTitle("CORONA.");
         newPost.setBody("Cats are cool");
+        newPost.setUser(user);
         Post post = postDao.save(newPost);
         long newPostId = post.getId();
         return String.format("Saving post with id of %d", newPostId);
