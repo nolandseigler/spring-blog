@@ -1,5 +1,7 @@
 package com.europa.springblog.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 
 @Entity
@@ -15,7 +17,7 @@ public class Post {
 
     @Column(nullable = false)
     private String body;
-
+    @JsonBackReference
     @ManyToOne @JoinColumn (name = "user_id")
 //    @ManyToOne
     private User user;

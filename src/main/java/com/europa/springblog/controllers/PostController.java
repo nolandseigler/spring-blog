@@ -102,9 +102,12 @@ public class PostController {
         return "posts/edit";
     }
 
-    @PostMapping("/posts/edit")
-    public String editPost(@ModelAttribute Post post) {
-        postDao.save(post);
+    @PostMapping("/posts/{id}/edit")
+    public String updatePost(@PathVariable long id, @ModelAttribute Post post) {
+        Post dbPost = postDao.findPostById(id);
+        dbPost.setTitle(post.getTitle());
+        dbPost.setBody(post.getBody());
+        postDao.save(dbPost);
         return "redirect:/posts/show";
     }
 
