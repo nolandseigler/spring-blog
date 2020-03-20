@@ -43,8 +43,10 @@ public class PostController {
     }
     @PostMapping("/posts/create")
     public String createPost(@ModelAttribute Post post) {
+        User user = userDao.getOne(1L); // just use the first user in the db
+        post.setUser(user);
         postDao.save(post);
-        return "redirect:/posts";
+        return "redirect:/posts/show";
     }
 
     @GetMapping("/make/user")
@@ -103,7 +105,7 @@ public class PostController {
     @PostMapping("/posts/edit")
     public String editPost(@ModelAttribute Post post) {
         postDao.save(post);
-        return "redirect:/posts";
+        return "redirect:/posts/show";
     }
 
     @DeleteMapping("/posts/delete")
@@ -113,6 +115,6 @@ public class PostController {
         postDao.deleteById(id);
         model.addAttribute("title", "Deleted");
         model.addAttribute("body", deletedTitle);
-        return "posts/show";
+        return "redirect:/posts/show";
     }
 }
