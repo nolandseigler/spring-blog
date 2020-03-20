@@ -94,10 +94,16 @@ public class PostController {
     }
 
     @GetMapping("/posts/{id}/edit")
-    public String editPost(@PathVariable long id, Model model){
+    public String getEditPostForm(@PathVariable long id, Model model){
         Post post = postDao.findPostById(id);
         model.addAttribute("post", post);
         return "posts/edit";
+    }
+
+    @PostMapping("/posts/edit")
+    public String editPost(@ModelAttribute Post post) {
+        postDao.save(post);
+        return "redirect:/posts";
     }
 
     @DeleteMapping("/posts/delete")
