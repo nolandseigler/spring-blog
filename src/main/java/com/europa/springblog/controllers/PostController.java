@@ -1,6 +1,7 @@
 package com.europa.springblog.controllers;
 
 
+import com.europa.springblog.services.EmailService;
 import com.europa.springblog.models.Post;
 import com.europa.springblog.models.User;
 import com.europa.springblog.repositories.PostRepo;
@@ -17,10 +18,12 @@ public class PostController {
 
     private PostRepo postDao;
     private UserRepo userDao;
+    private EmailService emailService;
 
-    public PostController(PostRepo postDao, UserRepo userDao) {
+    public PostController(PostRepo postDao, UserRepo userDao, EmailService emailService) {
         this.postDao = postDao;
         this.userDao = userDao;
+        this.emailService = emailService;
     }
 
     //SHOW IT JUST AS JSON.
@@ -46,6 +49,9 @@ public class PostController {
         User user = userDao.getOne(1L); // just use the first user in the db
         post.setUser(user);
         postDao.save(post);
+        String emailSubject = "A post on the blog was made by " + post.getUser().getUsername() + "." + "It is titled " + post.getTitle() + ".";
+        String emailBody = "The post on the blog was " + post.getBody();
+        emailService.prepareAndSend(post, emailSubject, emailBody);
         return "redirect:/posts/show";
     }
 
