@@ -49,7 +49,7 @@ public class PostController {
         User user = userDao.getOne(1L); // just use the first user in the db
         post.setUser(user);
         postDao.save(post);
-        String emailSubject = "A post on the blog was made by " + post.getUser().getUsername() + "." + "It is titled " + post.getTitle() + ".";
+        String emailSubject = "A post on the blog was made by " + post.getUser().getUsername() + "." + " It is titled " + post.getTitle() + ".";
         String emailBody = "The post on the blog was " + post.getBody();
         emailService.prepareAndSend(post, emailSubject, emailBody);
         return "redirect:/posts/show";
