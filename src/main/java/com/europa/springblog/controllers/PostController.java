@@ -36,6 +36,16 @@ public class PostController {
         model.addAttribute("postList", postList);
         return "posts/show";
     }
+    @GetMapping("/posts/create")
+    public String getPostCreateForm(Model model) {
+        model.addAttribute("post", new Post());
+        return "posts/create";
+    }
+    @PostMapping("/posts/create")
+    public String createPost(@ModelAttribute Post post) {
+        postDao.save(post);
+        return "redirect:/posts";
+    }
 
     @GetMapping("/make/user")
     @ResponseBody
@@ -62,14 +72,6 @@ public class PostController {
         return String.format("Saving post with id of %d", newPostId);
     }
 
-//    @GetMapping("/posts/update")
-//    @ResponseBody
-//    public String updatePost() {
-//        Post post = postDao.getOne(1L);
-//        post.setTitle("Cats with lemons(Updated)");
-//        postDao.save(post);
-//        return "Updating post";
-//    }
     @GetMapping("/posts/update")
     public String getUpdatePostForm() {
         return "posts/update";
@@ -89,6 +91,13 @@ public class PostController {
         model.addAttribute("title", post.getTitle());
         model.addAttribute("body", post.getBody());
         return "posts/show";
+    }
+
+    @GetMapping("/posts/{id}/edit")
+    public String editPost(@PathVariable long id, Model model){
+        Post post = postDao.findPostById(id);
+        model.addAttribute("post", post);
+        return "posts/edit";
     }
 
     @DeleteMapping("/posts/delete")

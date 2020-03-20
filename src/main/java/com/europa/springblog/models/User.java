@@ -14,6 +14,7 @@ public class User {
     @Column(nullable = false)
     private String password;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+//    @OneToMany
     private List<Post> postList;
 
     public User() {}
