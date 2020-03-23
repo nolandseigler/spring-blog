@@ -10,10 +10,4 @@ public class AuthenticationController {
     public String showLoginForm() {
         return "users/login";
     }
-//    //this is one way in curric and another in lecture.......
-//    //read some docs. commenting this out for now
-//    @PostMapping("/logout")
-//    public String logout() {
-//        return "users/login";
-//    }
 }

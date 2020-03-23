@@ -6,6 +6,7 @@ import com.europa.springblog.models.Post;
 import com.europa.springblog.models.User;
 import com.europa.springblog.repositories.PostRepo;
 import com.europa.springblog.repositories.UserRepo;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +37,12 @@ public class PostController {
     @GetMapping("/posts/show")
     public String showAllPosts(Model model) {
         List<Post> postList = postDao.findAll();
+        User user = new User();
+        if(SecurityContextHolder.getContext().getAuthentication().getPrincipal() != null) {
+            user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        }
         model.addAttribute("postList", postList);
+        model.addAttribute("user", user);
         return "posts/show";
     }
     @GetMapping("/posts/create")
@@ -46,7 +52,7 @@ public class PostController {
     }
     @PostMapping("/posts/create")
     public String createPost(@ModelAttribute Post post) {
-        User user = userDao.getOne(1L); // just use the first user in the db
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         post.setUser(user);
         postDao.save(post);
         String emailSubject = "A post on the blog was made by " + post.getUser().getUsername() + "." + " It is titled " + post.getTitle() + ".";
@@ -103,7 +109,11 @@ public class PostController {
 
     @GetMapping("/posts/{id}/edit")
     public String getEditPostForm(@PathVariable long id, Model model){
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Post post = postDao.findPostById(id);
+        if(user.getId() != post.getUser().getId()) {
+            return "redirect:/posts/show";
+        }
         model.addAttribute("post", post);
         return "posts/edit";
     }
@@ -111,6 +121,10 @@ public class PostController {
     @PostMapping("/posts/{id}/edit")
     public String updatePost(@PathVariable long id, @ModelAttribute Post post) {
         Post dbPost = postDao.findPostById(id);
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(user.getId() != dbPost.getUser().getId()) {
+            return "redirect:/posts/show";
+        }
         dbPost.setTitle(post.getTitle());
         dbPost.setBody(post.getBody());
         postDao.save(dbPost);
@@ -120,6 +134,10 @@ public class PostController {
     @DeleteMapping("/posts/delete")
     public String deletePost(@RequestParam long id, Model model){
         Post post = postDao.findPostById(id);
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(user.getId() != post.getUser().getId()) {
+            return "redirect:/posts/show";
+        }
         String deletedTitle = post.getTitle();
         postDao.deleteById(id);
         model.addAttribute("title", "Deleted");
