@@ -10,6 +10,11 @@
         <li>Home</li>
         <li>About</li>
         <li>Contact</li>
+        <li>
+            <form th:action="@{/logout_app}" th:method="post">
+                <button class="btn-link btn" style="margin-top: 8px">Logout</button>
+            </form>
+        </li>
     </ul>
 </nav>
 </body>
