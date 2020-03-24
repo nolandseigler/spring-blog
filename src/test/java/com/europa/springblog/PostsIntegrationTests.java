@@ -118,22 +118,43 @@ public class PostsIntegrationTests {
     }
 
     @Test
-    public void testEditAd() throws Exception {
+    public void testEditPost() throws Exception {
         // Gets the first Ad for tests purposes
-        Post existingPost = postsDao.findAll().get(0);
+        Post existingPost = postsDao.findAll().get(postsDao.findAll().size() - 1);
 
-        // Makes a Post request to /posts/{id}/edit and expect a redirection to the Ad show page
+        // Makes a Post request to /posts/{id}/edit and expect a redirection to the Post show page
         this.mvc.perform(
                 post("/posts/" + existingPost.getId() + "/edit").with(csrf())
                         .session((MockHttpSession) httpSession)
                         .param("title", "edited title")
                         .param("body", "edited body"))
                 .andExpect(status().is3xxRedirection());
-        // Makes a GET request to /ads/{id} and expect a redirection to the Ad show page
+        // Makes a GET request to /posts/{id} and expect a redirection to the Post show page
         this.mvc.perform(get("/posts/" + existingPost.getId()))
                 .andExpect(status().isOk())
                 // Test the dynamic content of the page
                 .andExpect(content().string(containsString("edited title")))
                 .andExpect(content().string(containsString("edited body")));
+    }
+
+    @Test
+    public void testDeleteAd() throws Exception {
+        // Creates a test Ad to be deleted
+        this.mvc.perform(
+                post("/posts/create").with(csrf())
+                        .session((MockHttpSession) httpSession)
+                        .param("title", "post to be deleted")
+                        .param("body", "won't last long"))
+                .andExpect(status().is3xxRedirection());
+
+        // Get the recent Ad that matches the title
+        Post existingPost = postsDao.findPostByTitle("post to be deleted");
+
+        // Makes a Post request to /ads/{id}/delete and expect a redirection to the Ads index
+        this.mvc.perform(
+                delete("/posts//delete").with(csrf())
+                        .session((MockHttpSession) httpSession)
+                        .param("id", String.valueOf(existingPost.getId())))
+                .andExpect(status().is3xxRedirection());
     }
 }
