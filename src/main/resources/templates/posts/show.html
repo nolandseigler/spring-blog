@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="fragments/header.html :: header('Latest Posts')"></head>
+<head th:replace="fragments/header.html :: header(title = 'Latest Posts')"></head>
 <body>
 <nav th:replace="fragments/navbar.html :: navbar"></nav>
 <div th:each="post : ${postList}">
