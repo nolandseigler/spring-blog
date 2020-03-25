@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head>
-    <meta charset="UTF-8">
-    <title>All Posts</title>
-</head>
+<head th:replace="fragments/header.html :: header(title = 'All Posts')"></head>
 <body>
+<nav th:replace="fragments/navbar.html :: navbar"></nav>
 <div th:each="post : ${posts}">
     <h1 th:text = "${post.title}"></h1>
     <p th:text = "${post.body}"></p>
 </div>
+<div th:replace="fragments/body-scripts.html :: body-scripts"></div>
 </body>
 </html>

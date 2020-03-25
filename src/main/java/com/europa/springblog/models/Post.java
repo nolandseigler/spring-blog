@@ -19,7 +19,6 @@ public class Post {
     private String body;
     @JsonBackReference
     @ManyToOne @JoinColumn (name = "user_id")
-//    @ManyToOne
     private User user;
 
 
